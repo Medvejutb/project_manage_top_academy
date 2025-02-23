@@ -1,0 +1,52 @@
+{% extends 'pm/base.html' %}
+
+{% block title %} Создание проекта {% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="text-center">Создание нового проекта</h1>
+
+  <form method="POST" class="mt-4">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="name" class="form-label">Название проекта</label>
+      <input type="text" class="form-control" id="name" name="name" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="description" class="form-label">Описание проекта</label>
+      <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="start" class="form-label">Дата начала</label>
+      <input type="date" class="form-control" id="start" name="start" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="end" class="form-label">Дата окончания</label>
+      <input type="date" class="form-control" id="end" name="end" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="status" class="form-label">Статус проекта</label>
+      <select class="form-select" id="status" name="status">
+        <option value="A">В процессе</option>
+        <option value="C">Закрыт</option>
+        <option value="F">Приостановлен</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="manager" class="form-label">Менеджер проекта</label>
+      <select class="form-select" id="manager" name="manager">
+        {% for user in users %}
+          <option value="{{ user.id }}">{{ user.username }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Создать проект</button>
+  </form>
+</div>
+{% endblock %}

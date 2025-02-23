@@ -46,7 +46,7 @@ ROOT_URLCONF = 'pm.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'pm' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -90,6 +90,15 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # Используем стандартную систему аутентификации
+]
+
+AUTH_USER_MODEL = 'auth.User'  # Можно заменить на кастомную модель
+LOGIN_REDIRECT_URL = '/'  # Куда редиректить после логина
+LOGOUT_REDIRECT_URL = '/'  # Куда редиректить после логаута
+
 
 
 # Internationalization

@@ -4,14 +4,14 @@ from django.contrib.auth.models import User
 
 class Tasks(models.Model):
     priority_choices = [
-        ('H', 'high'),
-        ('M', 'medium'),
-        ('L', 'low')
+        ('H', 'Высокий'),
+        ('M', 'Средний'),
+        ('L', 'Низкий')
     ]
     status_choices = [
-        ('N', 'not_started'),
-        ('I', 'in_progress'),
-        ('C', 'completed'),
+        ('N', 'Не начато'),
+        ('I', 'В процессе'),
+        ('C', 'Завершено'),
     ]
 
     name = models.CharField(max_length=30)
@@ -40,6 +40,11 @@ class Tasks(models.Model):
         blank=True,
         related_name='tasks_executor',
                                  )
+
+    class Meta:
+        permissions = [
+            ("view_assigned_task", "возможность просматривать задачу")
+        ]
 
     def __str__(self):
         return (f'В проекте {self.project} задача - {self.name}, приоритет - {self.priority}, статус - {self.status},\n'

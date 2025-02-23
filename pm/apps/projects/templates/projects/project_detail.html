@@ -1,0 +1,82 @@
+{% extends 'pm/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>{{ project.name }}</h1>
+    <p><strong>Описание:</strong> {{ project.description }}</p>
+    <p><strong>Дата начала:</strong> {{ project.start }}</p>
+    <p><strong>Дата окончания:</strong> {{ project.end }}</p>
+    <p><strong>Статус:</strong> {{ project.get_status_display }}</p>
+    <p><strong>Менеджер:</strong> {{ project.manager|default:"Не назначен" }}</p>
+
+    <h2>Задачи проекта</h2>
+    {% if project.tasks_set.all %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Приоритет</th>
+                    <th>Статус</th>
+                    <th>Дата начала</th>
+                    <th>Дата окончания</th>
+                    <th>Исполнитель</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in project.tasks_set.all %}
+                <tr>
+                    <td>{{ task.name }}</td>
+                    <td>{{ task.get_priority_display }}</td>
+                    <td>{{ task.get_status_display }}</td>
+                    <td>{{ task.start }}</td>
+                    <td>{{ task.end }}</td>
+                    <td>{{ task.executor|default:"Не назначен" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Задач пока нет.</p>
+    {% endif %}
+
+    <button id="toggleFormBtn" class="btn btn-primary">Добавить задачу</button>
+
+    <div id="taskFormContainer" class="hidden mt-4">
+        <h3>Добавить новую задачу</h3>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Добавить задачу</button>
+        </form>
+    </div>
+</div>
+
+{% block extra_js %}
+    <script>
+        const toggleButton = document.getElementById('toggleFormBtn');
+        const formContainer = document.getElementById('taskFormContainer');
+
+        toggleButton.addEventListener('click', function() {
+            formContainer.classList.toggle('hidden');
+        });
+    </script>
+{% endblock %}
+
+{% block extra_css %}
+    <style>
+        .hidden {
+            display: none;
+        }
+
+        #taskFormContainer {
+            transition: all 0.3s ease-in-out;
+        }
+
+
+        #taskFormContainer.show {
+            display: block;
+        }
+    </style>
+{% endblock %}
+
+{% endblock %}

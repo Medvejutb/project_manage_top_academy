@@ -4,9 +4,9 @@ from django.contrib.auth.models import User
 
 class Projects(models.Model):
     status_choices = [
-        ('A', 'active'),
-        ('C', 'close'),
-        ('F', 'freeze')
+        ('A', 'в процессе'),
+        ('C', 'закрыт'),
+        ('F', 'приостановлен')
     ]
 
     name = models.CharField(max_length=30)
@@ -26,6 +26,11 @@ class Projects(models.Model):
         blank=True,
         related_name='projects_manager',
     )
+
+    class Meta:
+        permissions = [
+            ("manage_project", "Возможность управлять проектом")
+        ]
 
     def __str__(self):
         return (f'Проект - {self.name}, дата начала - {self.start}, дата окончания - {self.end},\n'
