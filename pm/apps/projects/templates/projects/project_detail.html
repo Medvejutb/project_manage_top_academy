@@ -41,12 +41,15 @@
 
     <button id="toggleFormBtn" class="btn btn-primary">Добавить задачу</button>
 
+
     <div id="taskFormContainer" class="hidden mt-4">
+        {% if is_admin or is_manager %}
         <h3>Добавить новую задачу</h3>
         <form method="POST">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit" class="btn btn-primary">Добавить задачу</button>
+            {% endif %}
         </form>
     </div>
 </div>

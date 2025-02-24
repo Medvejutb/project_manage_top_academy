@@ -8,15 +8,34 @@ from .forms import TaskForm, Project_create_form
 # Create your views here.
 def projects_list(request):
     projects = Projects.objects.all()
-    return render(request, 'projects/projects_list.html', {'projects': projects})
+    user = request.user
+    #user_tasks = Tasks.objects.filter(executor=request.user)
+    is_admin = user.groups.filter(name='admin').exists()
+    is_manager = user.groups.filter(name='manager').exists()
+    is_executor = user.groups.filter(name='executor').exists()
+    projects_manager = Projects.objects.filter(manager=user)
+    projects_executor = Projects.objects.filter(tasks__executor=user)
+    context = {
+        'user': user,
+        'is_admin': is_admin,
+        'is_manager': is_manager,
+        'is_executor': is_executor,
+        'projects': projects,
+        'projects_manager': projects_manager,
+        'projects_executor': projects_executor,
+    }
+    return render(
+        request,
+        'projects/projects_list.html',
+        context
+    )
 
 @login_required
-@permission_required('projects.add_task', raise_exception=True)
 def project_detail(request, pk):
     project = get_object_or_404(Projects, pk=pk)
 
-    if not (request.user == project.manager or request.user.is_superuser):
-        return redirect('projects_list')
+    #if not (request.user == project.manager or request.user.is_superuser):
+    #    return redirect('projects_list')
 
     tasks = Tasks.objects.filter(project=project)
 
@@ -32,12 +51,11 @@ def project_detail(request, pk):
 
     return render(request, 'projects/project_detail.html', {
         'project': project,
-        'tasks':tasks,
+        'tasks': tasks,
         'form': form,
     })
 
 @login_required
-@permission_required('projects.add_project', raise_exception=True)
 def project_create(request):
     users = User.objects.all()
 
