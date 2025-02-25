@@ -14,7 +14,7 @@ def projects_list(request):
     is_manager = user.groups.filter(name='manager').exists()
     is_executor = user.groups.filter(name='executor').exists()
     projects_manager = Projects.objects.filter(manager=user)
-    projects_executor = Projects.objects.filter(tasks__executor=user)
+    projects_executor = Projects.objects.filter(tasks__executor=user).distinct()
     context = {
         'user': user,
         'is_admin': is_admin,
@@ -49,11 +49,21 @@ def project_detail(request, pk):
     else:
         form = TaskForm()
 
-    return render(request, 'projects/project_detail.html', {
+    user = request.user
+    is_admin = user.groups.filter(name='admin').exists()
+    is_manager = user.groups.filter(name='manager').exists()
+    is_executor = user.groups.filter(name='executor').exists()
+
+    context = {
         'project': project,
         'tasks': tasks,
         'form': form,
-    })
+        'is_admin': is_admin,
+        'is_manager': is_manager,
+        'is_executor': is_executor,
+    }
+
+    return render(request, 'projects/project_detail.html', context)
 
 @login_required
 def project_create(request):
